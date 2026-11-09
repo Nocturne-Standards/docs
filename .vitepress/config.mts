@@ -26,9 +26,9 @@ const ROOT_REDIRECT_HTML = `<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <title>Nocturne Standards Docs</title>
-  <link rel="canonical" href="/v1/">
-  <meta http-equiv="refresh" content="0; url=/v1/">
-  <script>location.replace('/v1/')</script>
+  <link rel="canonical" href="/v1/vigil/">
+  <meta http-equiv="refresh" content="0; url=/v1/vigil/">
+  <script>location.replace('/v1/vigil/')</script>
 </head>
 <body></body>
 </html>
@@ -39,7 +39,7 @@ function redirectRootToV1(): Plugin {
     const path = req.url?.split('?')[0]
     if (path === '/' || path === '/index.html') {
       res.statusCode = 302
-      res.setHeader('Location', '/v1/')
+      res.setHeader('Location', '/v1/vigil/')
       res.end()
       return
     }
@@ -157,8 +157,8 @@ export default withMermaid(
         alt: 'Nocturne Standards',
       },
       siteTitle: 'Docs',
-      // Hub overview lives on the logo + Docs title (no separate sidebar Overview)
-      logoLink: '/v1/',
+      // Opening the docs lands on Vigil, the first product. The v1 hub stays at /v1/.
+      logoLink: '/v1/vigil/',
       nav: [
         { text: 'Deployments', link: '/v1/deployments/' },
         { text: 'Home', link: 'https://nocturne-standards.org' },
