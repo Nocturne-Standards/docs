@@ -1,4 +1,5 @@
 import { writeFileSync } from 'node:fs'
+import type { Connect, Plugin } from 'vite'
 import { join } from 'node:path'
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
@@ -20,6 +21,41 @@ import {
 } from './machine-surface-lib.mjs'
 
 // Held pages (see HELD_PAGES in published.mts): [slug, path] pairs, prod only.
+const ROOT_REDIRECT_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Nocturne Standards Docs</title>
+  <link rel="canonical" href="/v1/">
+  <meta http-equiv="refresh" content="0; url=/v1/">
+  <script>location.replace('/v1/')</script>
+</head>
+<body></body>
+</html>
+`
+
+function redirectRootToV1(): Plugin {
+  const redirect: Connect.NextHandleFunction = (req, res, next) => {
+    const path = req.url?.split('?')[0]
+    if (path === '/' || path === '/index.html') {
+      res.statusCode = 302
+      res.setHeader('Location', '/v1/')
+      res.end()
+      return
+    }
+    next()
+  }
+  return {
+    name: 'redirect-root-to-v1',
+    configureServer(server) {
+      server.middlewares.use(redirect)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(redirect)
+    },
+  }
+}
+
 const heldPairs: [string, string][] =
   DOCS_SURFACE === 'prod'
     ? Object.entries(HELD_PAGES).flatMap(([slug, paths]) =>
@@ -68,6 +104,7 @@ export default withMermaid(
     vite: {
       // Bake surface into client bundles so theme components that import
       // published.mts / surface-lib never touch `process` in the browser.
+      plugins: [redirectRootToV1()],
       define: {
         __DOCS_SURFACE__: JSON.stringify(DOCS_SURFACE),
       },
@@ -157,8 +194,9 @@ export default withMermaid(
       },
     },
     async buildEnd(siteConfig) {
-      if (DOCS_SURFACE !== 'prod') return
       const outDir = siteConfig.outDir
+      writeFileSync(join(outDir, 'index.html'), ROOT_REDIRECT_HTML, 'utf8')
+      if (DOCS_SURFACE !== 'prod') return
       const pages = siteConfig.pages ?? []
       const rawPaths = [
         '/',
