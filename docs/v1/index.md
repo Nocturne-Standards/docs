@@ -1,6 +1,6 @@
 # v1
 
-Hub for the current docs cut. The list below follows the active docs surface (`DOCS_SURFACE`): production shows published products only; `npm run docs:dev` shows the full tree.
+The current docs for Nocturne Standards on Dusk. A product is what a person uses. A building block is what a project deploys.
 
 ## Products and building blocks
 
