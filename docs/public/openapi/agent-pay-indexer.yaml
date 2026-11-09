@@ -1,0 +1,165 @@
+openapi: 3.1.0
+info:
+  title: Agent Pay Indexer
+  version: 0.1.0
+  description: Typed History APIs over canonical agent-pay events (Plan 06).
+paths:
+  /health:
+    get:
+      summary: Liveness (chain-gateway-core)
+      responses:
+        "200":
+          description: ok
+  /status:
+    get:
+      summary: Gateway status (chain-gateway-core)
+      responses:
+        "200":
+          description: status
+  /agent-payments/sessions/{session_id_hex}:
+    get:
+      summary: Canonical events for a session
+      parameters:
+        - name: session_id_hex
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: page
+        "400":
+          description: invalid session id
+  /agent-payments/nonce/{session_id_hex}/{pay_nonce}:
+    get:
+      summary: Payment event by session nonce
+      parameters:
+        - name: session_id_hex
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pay_nonce
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: payment event
+        "404":
+          description: nonce never seen
+  /agent-payments/tx/{tx_hash}:
+    get:
+      summary: Events and tx_status for a transaction hash
+      parameters:
+        - name: tx_hash
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: included or reverted
+        "404":
+          description: tx_not_indexed
+        "503":
+          description: indexer_unavailable
+  /agent-payments/events:
+    get:
+      summary: Paginated canonical feed
+      parameters:
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: session_id_hex
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: page
+  /agent-payments/activity:
+    get:
+      summary: Newest-50 activity rows
+      parameters:
+        - name: session_id_hex
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            maximum: 50
+      responses:
+        "200":
+          description: activity rows
+  /agent-payments/reconcile:
+    get:
+      summary: Combine nonce and tx lookup (relayer-aligned status)
+      parameters:
+        - name: session_id_hex
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: pay_nonce
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: tx_hash
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: submitted included reverted or unknown
+        "503":
+          description: indexer_unavailable
+  /agent-payments/gas-telemetry:
+    get:
+      summary: Gas telemetry aggregates
+      parameters:
+        - name: chain_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: settlement_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: settlement_wasm
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: escrow_wasm
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: payee_kind
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: aggregates

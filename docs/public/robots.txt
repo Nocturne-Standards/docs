@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Internal working trees are srcExcluded from VitePress, but keep
+# disallows so a mis-serve never invites crawl.
+Disallow: /superpowers/
+Disallow: /ops/
+
+Sitemap: https://docs.nocturne-standards.org/sitemap.xml

@@ -1,0 +1,6 @@
+# Substrings that neutralize a leak-gate hit (line contains any of these → ignored).
+
+# Gate copies name the paths they refuse. The names are the check, not a leak.
+scripts/check-gate-coverage.sh
+scripts/check-audit-sha.sh
+scripts/bls-insecure-allowlist.txt

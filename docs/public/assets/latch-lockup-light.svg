@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" width="240" height="192" fill="none">
+  <g transform="translate(36,4)"><circle cx="18" cy="24" r="9" stroke="#292b31" stroke-width="2"></circle><circle cx="30" cy="24" r="9" stroke="#292b31" stroke-width="2"></circle><circle cx="24" cy="24" r="2.6" fill="#9184d9"></circle></g>
+  <text x="60" y="80" font-family="Inter, sans-serif" font-weight="500" font-size="20" letter-spacing="-0.2" text-anchor="middle" fill="#292b31">Latch</text>
+</svg>

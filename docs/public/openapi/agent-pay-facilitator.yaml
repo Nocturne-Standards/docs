@@ -1,0 +1,515 @@
+openapi: 3.1.0
+info:
+  title: Chit facilitator (local)
+  description: |-
+    OpenAPI for the **local** Chit facilitator (`agent-pay-facilitator`, default port `:8790`, `DEMO_MODE=mock|testnet`).
+
+    This document describes the HTTP surface used by the local demo UI and integrator examples. It does **not** describe the hosted mock at chit.nocturne-standards.org until that mock publishes a matching contract.
+
+    Routes under `/demo/*` are **demo-only** (in-process ledger / testnet session helpers). Protocol-facing paths (`/x402/terms`, `/relay`, `/ap2/pay`) match the custody-free relayer used by the demo.
+  version: 0.1.0
+servers:
+- url: http://127.0.0.1:8790
+  description: Local facilitator (DEMO_MODE=mock|testnet)
+paths:
+  /ap2/pay:
+    post:
+      tags:
+      - ap2
+      operationId: ap2Pay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ap2Bundle'
+        required: true
+      responses:
+        '200':
+          description: Mapped and submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayResponse'
+        '400':
+          description: Map or relay rejected (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /demo/consume:
+    post:
+      tags:
+      - demo
+      operationId: demoConsume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsumeBody'
+        required: true
+      responses:
+        '200':
+          description: Receipt consumed (single-use)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsumeResponse'
+        '400':
+          description: Consume failed (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /demo/open-session:
+    post:
+      tags:
+      - demo
+      operationId: demoOpenSession
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenSessionRequest'
+        required: true
+      responses:
+        '200':
+          description: Session opened (mock) or attached/opened (testnet)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoStatus'
+        '400':
+          description: Open failed (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /demo/receipts/{tx_id}:
+    get:
+      tags:
+      - demo
+      operationId: demoReceipt
+      parameters:
+      - name: tx_id
+        in: path
+        description: Payment tx id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Known receipt (non-consuming peek)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptPeek'
+        '404':
+          description: Unknown tx (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /demo/reset:
+    post:
+      tags:
+      - demo
+      operationId: demoReset
+      responses:
+        '200':
+          description: Cleared demo state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoStatus'
+  /demo/revoke:
+    post:
+      tags:
+      - demo
+      operationId: demoRevoke
+      responses:
+        '200':
+          description: Session revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoStatus'
+        '400':
+          description: Revoke failed (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /demo/status:
+    get:
+      tags:
+      - demo
+      operationId: demoStatus
+      responses:
+        '200':
+          description: Current demo ledger status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoStatus'
+  /health:
+    get:
+      tags:
+      - health
+      operationId: health
+      responses:
+        '200':
+          description: Plain-text ok
+          content:
+            text/plain:
+              schema:
+                type: string
+  /relay:
+    post:
+      tags:
+      - relay
+      operationId: relay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentSignedPayment'
+        required: true
+      responses:
+        '200':
+          description: Submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelayResponse'
+        '400':
+          description: Rejected (plain text)
+          content:
+            text/plain:
+              schema:
+                type: string
+  /x402/terms:
+    post:
+      tags:
+      - x402
+      summary: 'x402-style handshake: always 402 with payment terms JSON body.'
+      operationId: x402Terms
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TermsQuery'
+        required: true
+      responses:
+        '402':
+          description: Payment required - terms in body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/X402PaymentTerms'
+components:
+  schemas:
+    AgentSignedPayment:
+      type: object
+      description: Agent-signed payment payload the facilitator relays (does not custody).
+      required:
+      - intent
+      - signature_hex
+      properties:
+        intent:
+          $ref: '#/components/schemas/PaymentIntent'
+        signature_hex:
+          type: string
+          description: Hex-encoded agent signature over the intent (opaque to facilitator).
+    Ap2Bundle:
+      type: object
+      description: POST `/ap2/pay` body - Intent + Cart + Payment mandates + agent signature.
+      required:
+      - intent
+      - cart
+      - payment
+      - signature_hex
+      properties:
+        cart:
+          $ref: '#/components/schemas/Ap2CartMandate'
+        intent:
+          $ref: '#/components/schemas/Ap2IntentMandate'
+        payment:
+          $ref: '#/components/schemas/Ap2PaymentMandate'
+        signature_hex:
+          type: string
+    Ap2CartMandate:
+      type: object
+      description: Cart mandate - binds a specific cart/amount.
+      required:
+      - type
+      - cart_total
+      - currency
+      properties:
+        cart_total:
+          type: integer
+          format: int64
+          minimum: 0
+        currency:
+          type: string
+        type:
+          type: array
+          items:
+            type: string
+    Ap2IntentMandate:
+      type: object
+      description: Minimal AP2-shaped Intent mandate (W3C VC payload fields we care about).
+      required:
+      - type
+      - spend_cap
+      - expiry
+      - scope
+      - agent_settlement_address
+      properties:
+        agent_settlement_address:
+          type: string
+        expiry:
+          type: integer
+          format: int64
+          minimum: 0
+        scope:
+          type: string
+        spend_cap:
+          type: integer
+          format: int64
+          minimum: 0
+        type:
+          type: array
+          items:
+            type: string
+    Ap2PaymentMandate:
+      type: object
+      description: Payment mandate - binds the payment rail / session.
+      required:
+      - type
+      - session_id
+      - amount
+      - payee
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+        payee:
+          type: string
+        session_id:
+          type: string
+        type:
+          type: array
+          items:
+            type: string
+    ConsumeBody:
+      type: object
+      description: POST `/demo/consume` body.
+      required:
+      - tx_id
+      properties:
+        tx_id:
+          type: string
+    ConsumeResponse:
+      type: object
+      description: POST `/demo/consume` success body.
+      required:
+      - ok
+      - amount
+      - session_id
+      - tx_id
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+        ok:
+          type: boolean
+        session_id:
+          type: string
+        tx_id:
+          type: string
+    DemoEvent:
+      type: object
+      required:
+      - kind
+      - detail
+      - at_ms
+      properties:
+        at_ms:
+          type: integer
+          format: int64
+          minimum: 0
+        detail:
+          type: string
+        kind:
+          type: string
+    DemoStatus:
+      type: object
+      required:
+      - mode
+      - remaining_cap
+      - spend_cap
+      - revoked
+      - closed
+      - price_per_call
+      - scope
+      - events
+      properties:
+        closed:
+          type: boolean
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/DemoEvent'
+        last_tx:
+          type:
+          - string
+          - 'null'
+        mode:
+          type: string
+        price_per_call:
+          type: integer
+          format: int64
+          minimum: 0
+        remaining_cap:
+          type: integer
+          format: int64
+          minimum: 0
+        revoked:
+          type: boolean
+        scope:
+          type: string
+        session_id:
+          type:
+          - string
+          - 'null'
+        spend_cap:
+          type: integer
+          format: int64
+          minimum: 0
+    Mandate:
+      type: object
+      description: Canonical internal mandate after AP2 / Citadel translation.
+      required:
+      - spend_cap
+      - expiry_block
+      - scope
+      - settle_addr_hex
+      properties:
+        expiry_block:
+          type: integer
+          format: int64
+          minimum: 0
+        scope:
+          type: string
+          description: Opaque scope id (hex or utf8 tag), max 32 bytes when hashed on-chain.
+        settle_addr_hex:
+          type: string
+          description: Agent settlement address bytes as hex (32 bytes).
+        spend_cap:
+          type: integer
+          format: int64
+          minimum: 0
+    OpenSessionRequest:
+      type: object
+      required:
+      - spend_cap
+      properties:
+        price_per_call:
+          type: integer
+          format: int64
+          minimum: 0
+        scope:
+          type: string
+        spend_cap:
+          type: integer
+          format: int64
+          minimum: 0
+    PaymentIntent:
+      type: object
+      description: One payment the agent intends to make under a mandate/session.
+      required:
+      - session_id_hex
+      - amount
+      - payee_hex
+      - mandate
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+        mandate:
+          $ref: '#/components/schemas/Mandate'
+        payee_hex:
+          type: string
+        session_id_hex:
+          type: string
+    ReceiptPeek:
+      type: object
+      description: GET `/demo/receipts/{tx_id}` success body (existence peek, non-consuming).
+      required:
+      - tx_id
+      - known
+      properties:
+        known:
+          type: boolean
+        tx_id:
+          type: string
+    RelayResponse:
+      type: object
+      description: Successful relay / AP2 pay response.
+      required:
+      - tx_id
+      properties:
+        tx_id:
+          type: string
+    TermsQuery:
+      type: object
+      description: POST `/x402/terms` body.
+      required:
+      - resource
+      - amount
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+        resource:
+          type: string
+    X402PaymentTerms:
+      type: object
+      description: Terms returned with HTTP 402.
+      required:
+      - scheme
+      - network
+      - asset
+      - amount
+      - pay_to
+      - resource
+      - facilitator
+      properties:
+        amount:
+          type: integer
+          format: int64
+          minimum: 0
+        asset:
+          type: string
+        facilitator:
+          type: string
+          description: Facilitator only *submits* - never holds funds.
+        network:
+          type: string
+        pay_to:
+          type: string
+        resource:
+          type: string
+        scheme:
+          type: string
+tags:
+- name: health
+- name: x402
+- name: relay
+- name: ap2
+- name: demo
+  description: Demo-only session/receipt helpers - not a production API.

@@ -1,0 +1,26 @@
+{
+  "name": "nocturne-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "DOCS_SURFACE=dev vitepress dev",
+    "docs:dev:prod": "DOCS_SURFACE=prod vitepress dev",
+    "docs:build": "DOCS_SURFACE=prod vitepress build",
+    "docs:preview": "vitepress preview",
+    "test:docs-surface": "node --test scripts/test-docs-surface.mjs",
+    "test:machine-surface": "node --test scripts/test-machine-surface.mjs",
+    "check:skeleton": "node scripts/check-product-skeleton.mjs",
+    "test:product-skeleton": "node --test scripts/test-product-skeleton.mjs",
+    "test": "npm run check:skeleton && npm run test:docs-surface && npm run test:machine-surface && npm run test:product-skeleton"
+  },
+  "devDependencies": {
+    "mermaid": "11.16.0",
+    "vitepress": "1.6.4",
+    "vitepress-plugin-mermaid": "2.0.17",
+    "vue": "3.5.40",
+    "wrangler": "^4.112.0"
+  },
+  "dependencies": {
+    "@scalar/api-reference": "1.63.0"
+  }
+}

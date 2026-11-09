@@ -1,0 +1,741 @@
+@import "./lab/fonts.css";
+@import "./lab/tokens.css";
+
+:root {
+  /* VitePress brand — ink, not default purple */
+  --vp-c-brand-1: var(--ink);
+  --vp-c-brand-2: var(--ink-soft);
+  --vp-c-brand-3: #2d3748;
+  --vp-c-brand-soft: rgba(28, 36, 48, 0.08);
+
+  --vp-c-bg: var(--paper);
+  --vp-c-bg-alt: var(--paper-2);
+  --vp-c-bg-elv: var(--paper);
+  --vp-c-bg-soft: var(--paper-2);
+
+  --vp-c-text-1: var(--ink);
+  --vp-c-text-2: var(--ink-soft);
+  --vp-c-text-3: rgba(28, 36, 48, 0.55);
+
+  --vp-c-divider: var(--line);
+  --vp-c-gutter: var(--paper-2);
+  --vp-c-border: var(--line);
+
+  --vp-c-tip-1: var(--ink);
+  --vp-c-tip-2: var(--ink-soft);
+  --vp-c-tip-3: var(--sky);
+  --vp-c-tip-soft: rgba(213, 224, 234, 0.45);
+
+  --vp-button-brand-border: var(--ink);
+  --vp-button-brand-text: var(--paper);
+  --vp-button-brand-bg: var(--ink);
+  --vp-button-brand-hover-border: #2d3748;
+  --vp-button-brand-hover-text: var(--paper);
+  --vp-button-brand-hover-bg: #2d3748;
+  --vp-button-brand-active-border: var(--ink);
+  --vp-button-brand-active-text: var(--paper);
+  --vp-button-brand-active-bg: var(--ink);
+
+  --vp-font-family-base: var(--font-body);
+  --vp-font-family-heading: var(--font-display);
+
+  /* Shared static hue rim (matches homepage project cards, no glow) */
+  --hue-rim: linear-gradient(
+    115deg,
+    #8fb0c8 0%,
+    var(--sky) 22%,
+    #b8924a 52%,
+    var(--horizon) 72%,
+    #8fb0c8 100%
+  );
+
+  /* Sidebar rhythm — shared across product headers, chapters, leaves */
+  --sb-inset: 0.45rem;
+  --sb-pad-y: 0.4rem;
+  --sb-pad-x: 0.55rem;
+  --sb-gap: 0.7rem;
+  --sb-icon: 1.75rem;
+  --sb-caret: 1.25rem;
+  --sb-module-gap: 0.85rem;
+  --sb-radius: 10px;
+  --sb-l1-band: 92%;
+  --sb-level-bar: 2px;
+}
+
+/* Paper/sky wash behind the shell (matches marketing docs gradient) */
+html,
+body {
+  background: linear-gradient(180deg, var(--sky) 0%, var(--paper) 38%, var(--paper-2) 100%);
+  background-attachment: fixed;
+}
+
+.VPNavBar,
+.VPSidebar,
+.VPLocalNav,
+.VPDoc {
+  background-color: transparent;
+}
+
+/* Default theme footer unused — Contact / Privacy via layout-bottom (SiteLegal) */
+.VPFooter {
+  display: none !important;
+}
+
+.VPNavBar .wrapper,
+.VPNavBar .container {
+  background-color: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.VPSidebar {
+  display: flex !important;
+  flex-direction: column;
+  letter-spacing: 0.08em;
+  background-color: color-mix(in srgb, var(--paper) 88%, transparent) !important;
+  /* Room below last nav items (legal links live in layout-bottom) */
+  padding-bottom: 1.25rem !important;
+}
+
+.VPSidebar .nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 100%;
+  /* Space under Docs title / logo before first nav group */
+  padding-top: 0.85rem;
+}
+
+/* Page-end legal bar (layout-bottom slot — scrolls with the page, not sticky) */
+.site-legal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 1.25rem 1rem 1.5rem;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+.site-legal a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.site-legal a:hover {
+  opacity: 1;
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+.site-legal-sep {
+  color: var(--ink-soft);
+  opacity: 0.45;
+  user-select: none;
+}
+
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.VPHero .name,
+.VPHero .text {
+  font-family: var(--vp-font-family-heading);
+}
+
+/* The outline is a row above the page, so the article uses the column
+   the right rail used to occupy. */
+.content-container {
+  max-width: none !important;
+}
+
+.vp-doc {
+  font-size: 17px;
+}
+
+.vp-doc p,
+.vp-doc li {
+  line-height: 1.75;
+}
+
+.vp-doc h1 {
+  font-size: 34px !important;
+  line-height: 1.25 !important;
+}
+
+/* Tighten space between local-nav / chrome and the page title */
+.VPDoc {
+  padding-top: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .VPDoc {
+    padding-top: 1.15rem !important;
+  }
+}
+
+.vp-doc > h1:first-child,
+.vp-doc > div > h1:first-child {
+  margin-top: 0;
+}
+
+.vp-doc h2 {
+  font-size: 26px !important;
+  line-height: 1.3 !important;
+}
+
+.vp-doc h3 {
+  font-size: 21px !important;
+}
+
+/* Mermaid draws at its own size. A wide graph shrinks to the column.
+   It does not stretch up to fill the column. */
+.vp-doc .mermaid {
+  margin: 1rem 0 1.25rem;
+}
+
+.vp-doc .mermaid svg {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Page sections live under the active sidebar link. Hide the right rail
+   and the dropdown local nav so the article keeps the full column. */
+.VPLocalNav,
+.VPDoc .aside {
+  display: none !important;
+}
+
+.VPDoc .content,
+.VPDoc.has-aside .content,
+.VPDoc.has-sidebar .content {
+  max-width: none !important;
+  width: 100%;
+  min-width: 0;
+}
+
+.vp-doc h2,
+.vp-doc h3 {
+  scroll-margin-top: calc(var(--vp-nav-height) + 1rem);
+}
+
+.doc-outline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0.15rem var(--sb-inset) 0.55rem;
+  padding: 0.1rem 0 0.15rem calc(var(--sb-pad-x) + 0.55rem);
+}
+
+.doc-outline-item {
+  border-left: 2px solid color-mix(in srgb, var(--ink-soft) 40%, transparent);
+  padding: 0.05rem 0 0.05rem 0.55rem;
+  color: var(--ink-soft);
+  font-family: var(--vp-font-family-base);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.doc-outline-item:hover,
+.doc-outline-item.active {
+  border-left-color: var(--ink);
+  color: var(--ink);
+}
+
+html.sidebar-rail .doc-outline {
+  display: none !important;
+}
+
+/* Collapsed sidebar rail: brand titles stay; leaf links show glyph only */
+html.sidebar-rail {
+  --vp-sidebar-width: 84px;
+}
+
+html.sidebar-rail .VPSidebarItem.level-0:not(.is-link) > .item .text {
+  display: flex;
+  max-width: none;
+  overflow: visible;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+html.sidebar-rail .VPSidebarItem.level-1 .VPSidebarItem > .item {
+  display: none !important;
+}
+
+html.sidebar-rail .VPSidebar .VPSidebarItem .items {
+  padding-left: 0;
+}
+
+html.sidebar-rail .VPSidebar .group + .group {
+  margin-top: 10px;
+}
+
+/* ---- Shared item chrome (aligned selection boxes) ---- */
+.VPSidebar .group {
+  margin: 0;
+  padding: 0;
+}
+
+.VPSidebar .group + .group {
+  margin-top: var(--sb-module-gap);
+}
+
+/* Section labels (Platform / Payments / …) — quieter than product rows */
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item {
+  margin: 0.35rem var(--sb-inset) 0.15rem !important;
+  padding: 0.2rem var(--sb-pad-x) !important;
+  cursor: default;
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item:hover,
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item:focus-visible,
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item:focus-within {
+  border-color: transparent;
+  background-image: none;
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item .text {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0:has(> .items > .VPSidebarItem.collapsible) > .item .caret {
+  display: none;
+}
+
+/* Kill VitePress’s uneven level-0 bottom padding */
+.VPSidebarItem.level-0,
+.VPSidebarItem.collapsed.level-0 {
+  padding-bottom: 0 !important;
+}
+
+/* No left rule / indent that shifts nested selection boxes */
+.VPSidebarItem .items {
+  border-left: none !important;
+  padding-left: 0 !important;
+  margin: 0;
+}
+
+
+.VPSidebarItem > .item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  box-sizing: border-box;
+  width: auto !important;
+  margin: 0.1rem var(--sb-inset) !important;
+  padding: var(--sb-pad-y) var(--sb-pad-x) !important;
+  border-radius: var(--sb-radius);
+  border: 1px solid transparent;
+  background-color: transparent;
+  background-image: none;
+  transition: border-color 160ms ease, background-image 160ms ease;
+}
+
+/* Hover only — no :focus-within (mouse click left a sticky hue rim) */
+.VPSidebarItem > .item:hover {
+  border-color: transparent;
+  background-image:
+    linear-gradient(var(--paper), var(--paper)),
+    var(--hue-rim);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  outline: none;
+}
+
+/* Slim hue rim: current page leaf only (not parent chapters / product cards) */
+.VPSidebarItem.is-link.is-active > .item {
+  border-color: transparent !important;
+  background-image:
+    linear-gradient(var(--paper), var(--paper)),
+    var(--hue-rim) !important;
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.VPSidebarItem .indicator {
+  display: none !important;
+}
+
+.VPSidebarItem.collapsible > .item .caret {
+  display: grid;
+  place-items: center;
+  width: var(--sb-caret);
+  height: var(--sb-caret);
+  margin: 0 !important;
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+  background: transparent !important;
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.VPSidebarItem.collapsible > .item .caret-icon {
+  display: none;
+}
+
+.VPSidebarItem.collapsible > .item .caret::before {
+  content: "›";
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.VPSidebarItem.collapsible:not(.collapsed) > .item .caret::before {
+  content: "∨";
+  font-size: 0.8rem;
+}
+
+
+
+
+/*
+ * Products (L1): icon left, name centered in a wide band, hue when active.
+ * Nested rows: same left edge, leftbound icon+label — depth via left bar only.
+ */
+.VPSidebar .group,
+.VPSidebar .group > .VPSidebarItem,
+.VPSidebar .group .items,
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1,
+.VPSidebarItem.level-1 .VPSidebarItem {
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item {
+  cursor: pointer;
+  width: var(--sb-l1-band) !important;
+  max-width: var(--sb-l1-band);
+  margin-left: var(--sb-inset) !important;
+  margin-right: auto !important;
+  padding-right: calc(var(--sb-pad-x) + var(--sb-caret)) !important;
+  box-sizing: border-box;
+}
+
+/* Nested rows — full usable width, flush with product inset (no step indent) */
+.VPSidebarItem.level-1 .VPSidebarItem > .item {
+  width: auto !important;
+  max-width: none;
+  margin-left: var(--sb-inset) !important;
+  margin-right: var(--sb-inset) !important;
+  padding-right: calc(var(--sb-pad-x) + var(--sb-caret)) !important;
+  box-sizing: border-box;
+  /* Level cue: left bar (stronger / hue-tinted as we go deeper) */
+  border-left: var(--sb-level-bar) solid color-mix(in srgb, var(--ink-soft) 28%, transparent);
+  border-radius: 0 var(--sb-radius) var(--sb-radius) 0;
+}
+
+.VPSidebarItem.level-2 > .items > .VPSidebarItem > .item {
+  border-left-color: color-mix(in srgb, var(--ink-soft) 48%, transparent);
+}
+
+.VPSidebarItem.level-3 > .items > .VPSidebarItem > .item {
+  border-left-color: color-mix(in srgb, #8fb0c8 70%, var(--ink-soft));
+}
+
+.VPSidebarItem.level-4 > .items > .VPSidebarItem > .item {
+  border-left-color: color-mix(in srgb, var(--horizon) 55%, #8fb0c8);
+}
+
+.VPSidebarItem.level-1 .VPSidebarItem.is-link.is-active > .item {
+  border-left-color: transparent; /* slim hue rim already marks the page */
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .link,
+.VPSidebarItem.level-1 .VPSidebarItem > .item .link {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: calc(100% - var(--sb-caret)) !important;
+  min-width: 0;
+  display: block;
+  position: relative;
+  z-index: 0;
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .text,
+.VPSidebarItem.level-1 .VPSidebarItem > .item .text {
+  display: grid !important;
+  grid-template-columns: var(--sb-icon) minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--sb-gap);
+  width: 100%;
+  margin: 0;
+  padding: 0 !important;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Product: name centered in the band */
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .text {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-transform: none;
+}
+
+/* Nested: icon + label leftbound */
+.VPSidebarItem.level-1 .VPSidebarItem > .item .text {
+  text-align: left;
+  justify-items: start;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+.VPSidebarItem.level-1 .VPSidebarItem.level-2.collapsible > .item .text {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.VPSidebarItem.is-link.is-active > .item .text,
+.VPSidebarItem.is-link.is-active > .item .link > .text {
+  color: var(--ink) !important;
+}
+
+/* Icon / glyph cell */
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .text::before,
+.VPSidebarItem.level-1 .VPSidebarItem.is-link > .item .text::before,
+.VPSidebarItem.level-1 .VPSidebarItem.level-2.collapsible > .item .text::before {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: var(--sb-icon);
+  height: var(--sb-icon);
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .text::before {
+  content: "";
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.VPSidebarItem.level-1 .VPSidebarItem.level-2.collapsible > .item .text::before {
+  content: "";
+}
+
+.VPSidebarItem.level-1 .VPSidebarItem.is-link > .item .text::before {
+  content: "○";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/concepts"]) > .item .text::before {
+  content: "※";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/architecture"]) > .item .text::before {
+  content: "▦";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/run-locally"]) > .item .text::before {
+  content: "▶";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/roadmap"]) > .item .text::before {
+  content: "→";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/admin"]) > .item .text::before {
+  content: "⚙";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/extension"]) > .item .text::before {
+  content: "⌘";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/native-cash"]) > .item .text::before {
+  content: "⌗";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/indexing"]) > .item .text::before {
+  content: "≡";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/api"]) > .item .text::before {
+  content: "◇";
+}
+.VPSidebarItem.level-1 .VPSidebarItem.is-link:has(a[href*="/contracts"]) > .item .text::before {
+  content: "▣";
+}
+
+/* Product brand icons */
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/ambit/"]) > .item .text::before {
+  background-image: url("/assets/ambit-icon.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/knot/"]) > .item .text::before {
+  background-image: url("/assets/knot-icon.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/lien/"]) > .item .text::before {
+  background-image: url("/assets/lien-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/wen/"]) > .item .text::before {
+  background-image: url("/assets/wen-icon.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/chit/"]) > .item .text::before {
+  background-image: url("/assets/chit-icon.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/latch/"]) > .item .text::before {
+  background-image: url("/assets/latch-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/mill/"]) > .item .text::before {
+  background-image: url("/assets/mill-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/flint/"]) > .item .text::before {
+  background-image: url("/assets/flint-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/loom/"]) > .item .text::before {
+  background-image: url("/assets/loom-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/plate/"]) > .item .text::before {
+  background-image: url("/assets/plate-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/treasury/"]) > .item .text::before {
+  background-image: url("/assets/treasury-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/atlas/"]) > .item .text::before {
+  background-image: url("/assets/atlas-light.svg");
+}
+.VPSidebar .VPSidebarItem.level-1:has(a[href^="/v1/vigil/"]) > .item .text::before {
+  background-image: url("/assets/vigil-light.svg");
+}
+
+/* Selected project card: full hue fill */
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1.is-active > .item,
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1.is-active > .item:hover,
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1.has-active > .item,
+.VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1.has-active > .item:hover {
+  background-color: transparent !important;
+  background-image: var(--hue-rim) !important;
+  background-origin: border-box;
+  background-clip: border-box;
+}
+
+/* Caret above link — toggle only */
+.VPSidebarItem.collapsible > .item .caret {
+  position: absolute;
+  right: var(--sb-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  pointer-events: auto;
+}
+
+html.sidebar-rail .VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item {
+  width: auto !important;
+  max-width: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.4rem 0.25rem !important;
+  margin-left: var(--sb-inset) !important;
+  margin-right: var(--sb-inset) !important;
+}
+
+html.sidebar-rail .VPSidebar .group > .VPSidebarItem.level-0 > .items > .VPSidebarItem.level-1 > .item .text {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  font-size: 12px;
+}
+
+html.sidebar-rail .VPSidebarItem.collapsible > .item .caret {
+  display: none;
+}
+
+html.sidebar-rail .VPSidebarItem.level-1 .VPSidebarItem > .item {
+  display: none !important;
+}
+
+/* Logo + Docs title → hub: compact chip, centered in the nav title column */
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .container > .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.VPNavBarTitle.has-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.VPNavBarTitle .logo {
+  height: 1.55rem;
+  margin-right: 0 !important;
+}
+
+.VPNavBarTitle .title {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  width: auto !important;
+  max-width: max-content;
+  height: auto !important;
+  min-height: 0;
+  margin: 0;
+  padding: 0.4rem 0.7rem !important;
+  border: 1px solid transparent;
+  border-radius: var(--sb-radius);
+  border-bottom-color: transparent !important;
+  transition: border-color 160ms ease, background-image 160ms ease;
+}
+
+.VPNavBarTitle:hover .title,
+.VPNavBarTitle:focus-within .title {
+  border-color: transparent;
+  background-image:
+    linear-gradient(var(--paper), var(--paper)),
+    var(--hue-rim);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* VitePress offsets nav/sidebar/doc via --vp-layout-top-height when
+   layout-top content is present. Without it the sticky banner covers the nav. */
+:root:has(.dev-surface-banner) {
+  --vp-layout-top-height: 2.45rem;
+}
+
+.dev-surface-banner {
+  position: sticky;
+  top: 0;
+  z-index: var(--vp-z-index-layout-top);
+  box-sizing: border-box;
+  min-height: var(--vp-layout-top-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.dev-surface-banner code {
+  font-size: 0.8em;
+}

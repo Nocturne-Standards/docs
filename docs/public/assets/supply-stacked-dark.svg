@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 96" width="240" height="192" fill="none">
+  <g transform="translate(36,8)"><path d="M16.8,25 L31.2,25 L29.7,32 L18.3,32 Z" fill="#9184d9" opacity="0.4"></path>
+    <path d="M14,18 L34,18 L31,32 L17,32 Z" stroke="#e9e9ed" stroke-width="2" stroke-linejoin="round"></path>
+    <line x1="16.8" y1="25" x2="31.2" y2="25" stroke="#9184d9" stroke-width="2" stroke-linecap="round"></line></g>
+  <text x="60" y="80" font-family="Inter, sans-serif" font-weight="500" font-size="20" letter-spacing="-0.2" text-anchor="middle" fill="#e9e9ed">Supply</text>
+</svg>
