@@ -10,7 +10,7 @@ For this software, follow the tagged source and the version notes:
 
 | Software | Version |
 |---|---|
-| [Atlas](/v1/atlas/) | The versions table on that page. The crates are not on crates.io yet. |
+| [Atlas](/v1/atlas/) | [Versions](/v1/atlas/reference). `nocturne-atlas-encoding` 0.5.0 and `nocturne-atlas-event-decoder` 0.3.1 are on crates.io. `atlas.wasm` comes from the repository. |
 | [Knot](/v1/knot/) | [Releases](https://github.com/Nocturne-Standards/knot/releases) and [versioning.md](https://github.com/Nocturne-Standards/knot/blob/main/docs/versioning.md). |
 
 When a crate is published, its crates.io page is the version to depend on. Until then, pin a git tag or a full commit.
