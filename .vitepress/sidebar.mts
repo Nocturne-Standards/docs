@@ -122,7 +122,15 @@ export const PRODUCT_PAGES: Record<ProductSlug, Partial<Record<GroupName, PageDe
   flint: {},
   loom: {},
   plate: {},
-  atlas: {},
+  atlas: {
+    Start: [{ text: 'Deploy', path: 'deploy' }],
+    Understand: [{ text: 'Guardian', path: 'guardian' }],
+    Integrate: [
+      { text: 'Integrate', path: 'integrate' },
+      { text: 'On DuskEVM', path: 'evm' },
+    ],
+    Reference: [{ text: 'Reference', path: 'reference' }],
+  },
   knot: {
     Understand: [
       { text: 'Concepts', path: 'concepts' },
